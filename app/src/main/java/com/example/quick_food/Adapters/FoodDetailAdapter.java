@@ -13,9 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.quick_food.FoodDetails;
+import com.example.quick_food.GetterSetters.FoodDetails;
 import com.example.quick_food.R;
-import com.example.quick_food.recycler.Cart;
+import com.example.quick_food.Cart;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,11 +40,15 @@ public class FoodDetailAdapter extends RecyclerView.Adapter<FoodDeailHolder>{
     @Override
     public void onBindViewHolder(@NonNull FoodDeailHolder foodDeailHolder, final int i) {
 
-        final int foodImage = myFoodDetailList.get(i).getItemImage();
         final String foodID = myFoodDetailList.get(i).getFoodName();
         final String foodPrice = myFoodDetailList.get(i).getFoodPrice();
 
-        foodDeailHolder.fimageView.setImageResource(foodImage);
+        final String foodImage = myFoodDetailList.get(i).getItemImage();
+        Picasso.get()
+                .load(foodImage)
+                .placeholder(R.drawable.image_loading)
+                .into(foodDeailHolder.fimageView);
+
         foodDeailHolder.fdTitle.setText(foodID);
         foodDeailHolder.fdPrice.setText(foodPrice);
 

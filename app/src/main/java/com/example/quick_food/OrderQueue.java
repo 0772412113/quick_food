@@ -13,10 +13,4 @@ public class OrderQueue extends AppCompatActivity {
         setContentView(R.layout.activity_order_queue);
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(OrderQueue.this, UserProfile.class);
-        startActivity(intent);
-        finish();
-    }
 }

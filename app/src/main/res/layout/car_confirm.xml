@@ -47,8 +47,8 @@
         android:layout_height="56dp"
         android:layout_gravity="center"
         android:layout_weight=".30"
-        android:gravity="center"
-        app:srcCompat="@drawable/icon1" />
+        android:gravity="center" />
+
     <ImageView
         android:id="@+id/delete_image"
         android:layout_width="wrap_content"

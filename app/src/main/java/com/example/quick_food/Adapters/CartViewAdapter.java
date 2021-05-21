@@ -10,10 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.quick_food.CartDetails;
-import com.example.quick_food.FoodData;
+import com.example.quick_food.GetterSetters.CartDetails;
 import com.example.quick_food.R;
 import com.example.quick_food.recycler.CartView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -43,8 +43,12 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder>{
 
         CardViewHolder.mTitle.setText(nameOfFood);
         CardViewHolder.mPrice.setText(myCartList.get(i).getFoodPrice());
-        CardViewHolder.imageView.setImageResource(myCartList.get(i).getItemImage());
 
+        String foodImage = myCartList.get(i).getItemImage();
+        Picasso.get()
+                .load(foodImage)
+                .placeholder(R.drawable.image_loading)
+                .into(CardViewHolder.imageView);
 
         CardViewHolder.imageDelete.setOnClickListener(new View.OnClickListener() {
             @Override

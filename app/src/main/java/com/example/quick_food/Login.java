@@ -1,22 +1,19 @@
 package com.example.quick_food;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.quick_food.recycler.PlacesToBuy;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.quick_food.recycler.FoodCategory;
+import com.example.quick_food.recycler.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +37,21 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String name = prefs.getString("userPhoneNumber", "");
+        if (!name.equals("")) {
+
+            String isVendorLogged = prefs.getString("userIsVender", "");
+            if (isVendorLogged.equals("")) {
+                startActivity(new Intent(Login.this, FoodCategory.class));
+                finish();
+            } else {
+                startActivity(new Intent(Login.this, UserProfile.class));
+                finish();
+            }
+        }
 
         email = (EditText) findViewById(R.id.s_mail);
         pass = (EditText) findViewById(R.id.password);
@@ -75,10 +87,6 @@ public class Login extends AppCompatActivity {
                                     editor.putString("loggedUserMobile", userNew.getMobile());
                                     editor.putString("loggedUserEmail", userNew.getEmail());
 
-//                                    if (theVender != null) {
-//                                        editor.putString("userIsVender", "YES");
-//                                    }
-
                                     Log.e("TAG", dataSnapshot.getKey());
 
                                     FirebaseMessaging.getInstance().subscribeToTopic(dataSnapshot.getKey())
@@ -92,14 +100,14 @@ public class Login extends AppCompatActivity {
                                                 }
                                             });
 
-                                    if (theVender == null){
+                                    if (theVender == null) {
 
-                                        Intent intent = new Intent(Login.this, PlacesToBuy.class);
+                                        Intent intent = new Intent(Login.this, FoodCategory.class);
                                         finish();
                                         startActivity(intent);
                                         editor.apply();
 
-                                    }else if (theVender != null) {
+                                    } else {
 
                                         editor.putString("userIsVender", "YES");
 

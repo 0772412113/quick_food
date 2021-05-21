@@ -30,10 +30,11 @@ public class PaypalPayment extends AppCompatActivity implements AdapterView.OnIt
     String[] country = { "Cash", "USA", "China", "Japan", "Other"};
 
     public static final int PAYPAL_REQUEST_CODE = 7171;
+    public static final String PAYPAL_CLIENT_ID = "AfwJmJiLAZGLYHyy8BbGW9nAJELmnEZCBrQuAOrt3hO-rPXJq6wiAFXtdnwbCr8FXLWiLhhyLmFds-H9";
 
     private static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
-            .clientId(PaypalConfig.PAYPAL_CLIENT_ID);
+            .clientId(PAYPAL_CLIENT_ID);
 
     Button btnPayNow;
     TextView edtAmount;

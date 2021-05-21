@@ -1,20 +1,19 @@
 package com.example.quick_food.recycler;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-
 import com.example.quick_food.Adapters.CartViewAdapter;
-import com.example.quick_food.CartDetails;
+import com.example.quick_food.GetterSetters.CartDetails;
 import com.example.quick_food.PaypalPayment;
 import com.example.quick_food.R;
 
@@ -50,12 +49,15 @@ public class CartView extends AppCompatActivity {
         mRecycleView.setLayoutManager(gridLayoutManager);
 
 
-        final int foodImage = getIntent().getIntExtra("image_Name", 0);
+        final String foodImage = getIntent().getStringExtra("image_Name");
         final String foodId = getIntent().getStringExtra("item_name");
         final String foodPrice = getIntent().getStringExtra("total_price");
 
-        mcartData = new CartDetails(foodId, foodPrice, foodImage);
-        myCartList.add(mcartData);
+        if (foodId != null) {
+            mcartData = new CartDetails(foodId, foodPrice, foodImage);
+            myCartList.add(mcartData);
+        }
+
         method();
 
         CartViewAdapter myAdapter = new CartViewAdapter(CartView.this, myCartList);
@@ -78,19 +80,6 @@ public class CartView extends AppCompatActivity {
         mTxtTotalForCart.setText(String.valueOf(totalValueForAllCart));
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item){
-//        Intent intent = null;
-//        switch (item.getItemId()) {
-//            case R.id.home:
-//                intent = new Intent(this, Foods.class);
-//                break;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//        startActivity(intent);
-//        return true;
-//    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -105,10 +94,5 @@ public class CartView extends AppCompatActivity {
         return true;
     }
 
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu, menu);
-//        return true;
-//    }
 
 }

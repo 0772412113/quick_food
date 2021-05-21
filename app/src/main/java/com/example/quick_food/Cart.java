@@ -1,9 +1,8 @@
-package com.example.quick_food.recycler;
+package com.example.quick_food;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,7 +12,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.quick_food.R;
+import com.example.quick_food.recycler.CartView;
+import com.squareup.picasso.Picasso;
 
 public class Cart extends AppCompatActivity {
 
@@ -24,16 +24,16 @@ public class Cart extends AppCompatActivity {
     Spinner spinnerCount;
 
     String[] size = {"1", "2", "3", "4"};
-    ArrayAdapter <String> adapter;
+    ArrayAdapter<String> adapter;
 
-    double totalValue, groupOneVal, groupTwoVal,priceDouble;
+    double totalValue, groupOneVal, groupTwoVal, priceDouble;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cart_layout);
 
-        final int foodImage = getIntent().getIntExtra("FOOD_IMAGE_FOR_CART", 0);
+        final String foodImage = getIntent().getStringExtra("FOOD_IMAGE_FOR_CART");
         final String foodId = getIntent().getStringExtra("FOOD_ID_FOR_CART");
         final String price = getIntent().getStringExtra("FOOD_PRICE_FOR_CART");
 
@@ -48,14 +48,18 @@ public class Cart extends AppCompatActivity {
         buttoAddCart = findViewById(R.id.cart_submit);
         spinnerCount = (Spinner) findViewById(R.id.spinner_count);
 
-//        String size = spinnerCount.getSelectedItem().toString();
 
         double priceInInt = Double.parseDouble(price);
         priceDouble = priceInInt;
 
         mTitle.setText(foodId);
-        imageViewCart.setImageResource(foodImage);
         mTxtTotal.setText(String.valueOf(priceDouble));
+
+        Picasso.get()
+                .load(foodImage)
+                .placeholder(R.drawable.image_loading)
+                .into(imageViewCart);
+
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, size);
         spinnerCount.setAdapter(adapter);
@@ -106,10 +110,10 @@ public class Cart extends AppCompatActivity {
         buttoAddCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               double finalPrice = 0.0;
-                if(totalValue == 0){
+                double finalPrice = 0.0;
+                if (totalValue == 0) {
                     finalPrice = priceDouble;
-                }else{
+                } else {
                     finalPrice = totalValue;
                 }
                 Intent intent = new Intent(Cart.this, CartView.class);

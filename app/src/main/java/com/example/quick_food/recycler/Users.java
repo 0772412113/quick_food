@@ -1,4 +1,4 @@
-package com.example.quick_food;
+package com.example.quick_food.recycler;
 
 public class Users {
 

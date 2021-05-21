@@ -1,24 +1,36 @@
 package com.example.quick_food.recycler;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
 import com.example.quick_food.Adapters.FoodDetailAdapter;
-import com.example.quick_food.FoodDetails;
+import com.example.quick_food.GetterSetters.FoodDetails;
 import com.example.quick_food.OrderQueue;
 import com.example.quick_food.QRCodeScanner;
 import com.example.quick_food.R;
-import com.example.quick_food.Universities;
 import com.example.quick_food.UserProfile;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +43,9 @@ public class Foods extends AppCompatActivity {
     List<FoodDetails> myfoodDetailList;
     FoodDetails fFoodDetails;
     private boolean userIsVender = false;
+    FirebaseFirestore db;
+    FirebaseStorage storage;
+    KProgressHUD progressHUD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,82 +58,88 @@ public class Foods extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        fRecycleView = (RecyclerView)findViewById(R.id.recycleFoodView);
+        fRecycleView = (RecyclerView) findViewById(R.id.recycleFoodView);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(Foods.this,1);
+        progressHUD = KProgressHUD.create(Foods.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setDetailsLabel("Downloading data")
+                .setCancellable(true)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
+        storage = FirebaseStorage.getInstance();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(Foods.this, 1);
         fRecycleView.setLayoutManager(gridLayoutManager);
 
+
+
+        setDatalist();
+
+    }
+
+
+    private void setDatalist() {
+        progressHUD.show();
+        db = FirebaseFirestore.getInstance();
         myfoodDetailList = new ArrayList<>();
+        final String foodId = getIntent().getStringExtra("EXTRA_FOOD_ID");
 
-        String foodId = getIntent().getStringExtra("EXTRA_FOOD_ID");
+        db.collection("Foods")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
 
-        if(foodId.equals("Noodles")) {
+                                Log.d("Doc", document.getId() + " => " + document.getData());
 
-            fFoodDetails = new FoodDetails("Chicken nooddles", "200", R.drawable.chicknoddle);
-            myfoodDetailList.add(fFoodDetails);
+                                if(document.getString("Type").equals(foodId)) {
 
-            fFoodDetails = new FoodDetails("Vegitable nooddles", "120 ", R.drawable.vegnoddle);
-            myfoodDetailList.add(fFoodDetails);
+                                    final String Title = document.getString("name");
+                                    final String image = document.getString("image");
+                                    final String description = document.getString("price");
 
-            fFoodDetails = new FoodDetails("Egg nooddles", "160", R.drawable.eggnoddle);
-            myfoodDetailList.add(fFoodDetails);
+                                    StorageReference storageRef = storage.getReference();
+                                    StorageReference downloadRef = storageRef.child("Foods/" + image);
+                                    downloadRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            Log.d("Doc1", " => " + uri);
+                                            String imageURI = uri.toString();
 
-        }else if(foodId.equals("Fried Rice")){
-            fFoodDetails = new FoodDetails("Chicken Rice", "250", R.drawable.chickrice);
-            myfoodDetailList.add(fFoodDetails);
+                                            fFoodDetails = new FoodDetails(Title, description, imageURI);
+                                            myfoodDetailList.add(fFoodDetails);
 
-            fFoodDetails = new FoodDetails("Vegitable Rice", "220 ", R.drawable.vegrice);
-            myfoodDetailList.add(fFoodDetails);
+                                            FoodDetailAdapter foodDetailAdapter = new FoodDetailAdapter(Foods.this, myfoodDetailList);
+                                            fRecycleView.setAdapter(foodDetailAdapter);
+                                            progressHUD.dismiss();
 
-            fFoodDetails = new FoodDetails("Egg Rice", "1260", R.drawable.eggrice);
-            myfoodDetailList.add(fFoodDetails);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            //   Toast.makeText(getActivity(), "Error getting Data", Toast.LENGTH_LONG).show();
+                                            Log.d("Doc", "Error getting Data: ");
+                                            progressHUD.dismiss();
+                                        }
+                                    });
+                                }
+                            }
 
-        }else if(foodId.equals("Kottu")){
 
-            fFoodDetails = new FoodDetails("Chicken Kottu", "250", R.drawable.chickottu);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("Vegitable Kottu", "150 ", R.drawable.vegkottu);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("Egg Kottu", "100", R.drawable.eggkottu);
-            myfoodDetailList.add(fFoodDetails);
-
-        }else if(foodId.equals("Drinks")) {
-
-            fFoodDetails = new FoodDetails("Tea", "250", R.drawable.tea);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("MlikShake", "150 ", R.drawable.milkshake);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("Soft Drinks", "100", R.drawable.softdrinks);
-            myfoodDetailList.add(fFoodDetails);
-
-        }else{
-
-            fFoodDetails = new FoodDetails("Submarine", "250", R.drawable.submarine);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("Hot Dog", "150 ", R.drawable.hotdog);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("Sandwitch", "100", R.drawable.sandwitch);
-            myfoodDetailList.add(fFoodDetails);
-
-            fFoodDetails = new FoodDetails("Burger", "100", R.drawable.chicburger);
-            myfoodDetailList.add(fFoodDetails);
-
-        }
-
-        FoodDetailAdapter foodDetailAdapter = new FoodDetailAdapter(Foods.this,myfoodDetailList);
-        fRecycleView.setAdapter(foodDetailAdapter);
-
+                        } else {
+                            Log.d("Doc", "Error getting documents: ", task.getException());
+                            progressHUD.dismiss();
+                        }
+                    }
+                });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
         return true;
     }
 
@@ -141,21 +162,21 @@ public class Foods extends AppCompatActivity {
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.cart_icon_menu){
-            Intent intent = new Intent(Foods.this,CartView.class);
+        if (id == R.id.cart_icon_menu) {
+            Intent intent = new Intent(Foods.this, CartView.class);
             startActivity(intent);
             return true;
-        }else if (id == R.id.profile_menu) {
+        } else if (id == R.id.profile_menu) {
             Intent intent = new Intent(Foods.this, UserProfile.class);
             startActivity(intent);
             return true;
-        }else if (id == R.id.Orders){
-                Intent intent = new Intent(Foods.this, OrderQueue.class);
-                startActivity(intent);
-                return true;
-        }else if (id == R.id.QR_scanner){
+        } else if (id == R.id.Orders) {
+            Intent intent = new Intent(Foods.this, OrderQueue.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.QR_scanner) {
             Intent intent = new Intent(Foods.this, QRCodeScanner.class);
             startActivity(intent);
             return true;

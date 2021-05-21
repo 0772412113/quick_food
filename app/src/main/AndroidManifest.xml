@@ -22,13 +22,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".recycler.Foods" />
         <activity
-            android:name=".anime.selectAnim"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".recycler.PlacesToBuy"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".recycler.Cart"
+            android:name=".Cart"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
             android:name=".recycler.CartView"
@@ -39,9 +33,7 @@
         <activity
             android:name=".Login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".recycler.FoodCategory"
-            android:parentActivityName=".recycler.PlacesToBuy" />
+        <activity android:name=".recycler.FoodCategory" />
         <activity
             android:name=".anime.welcome"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

@@ -1,13 +1,13 @@
-package com.example.quick_food;
+package com.example.quick_food.GetterSetters;
 
 public class CartDetails {
 
     private String cartId;
     private String foodName;
     private String foodPrice;
-    private int itemImage;
+    private String itemImage;
 
-    public CartDetails(String foodName, String foodPrice, int itemImage) {
+    public CartDetails(String foodName, String foodPrice, String itemImage) {
         this.foodName = foodName;
         this.foodPrice = foodPrice;
         this.itemImage = itemImage;
@@ -21,7 +21,7 @@ public class CartDetails {
         return foodPrice;
     }
 
-    public int getItemImage() {
+    public String getItemImage() {
         return itemImage;
     }
 }
