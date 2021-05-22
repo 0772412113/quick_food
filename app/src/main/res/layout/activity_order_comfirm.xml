@@ -3,18 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#29252E"
+    android:background="@drawable/vendor_message_background"
     android:orientation="vertical"
     android:padding="20dp"
     tools:context=".OrderConfirmActivity">
 
     <TextView
+        android:id="@+id/order_title"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="New Order"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="30sp" />
+
+    <TextView
         android:id="@+id/confirm_id"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Loading.."
         android:textColor="@android:color/white"
-        android:textSize="25dp" />
+        android:textSize="25sp" />
 
     <LinearLayout
         android:id="@+id/layoutApprove"
@@ -27,7 +41,9 @@
             android:id="@+id/approvalButon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:background="@drawable/buttons"
             android:padding="17dp"
             android:text="Approve"
@@ -38,24 +54,30 @@
             android:id="@+id/rejectButon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:background="#E68484"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/cancel_buttons"
             android:padding="17dp"
             android:text="Reject"
             android:textColor="@android:color/white"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
     <Button
         android:id="@+id/doneButon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:background="#84E6B3"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/buttons"
         android:padding="17dp"
-        android:text="Done"
+        android:text="Complete"
         android:textColor="@android:color/white"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:visibility="gone" />
 
 

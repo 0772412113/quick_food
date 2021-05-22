@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#102027</color>
     <color name="colorAccent">#FF5722</color>
     <color name="Login">#003E70</color>
+    <color name="Cancel">#4C0202</color>
     <color name="primaryTextColor">#FFEB3B</color>
     <color name="SignupText">#FF5722</color>
     <color name="background">#FFC107</color>

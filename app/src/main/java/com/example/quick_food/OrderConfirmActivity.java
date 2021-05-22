@@ -38,7 +38,7 @@ import static com.example.quick_food.Utils.serverKey;
 
 public class OrderConfirmActivity extends AppCompatActivity {
 
-    TextView confirmId;
+    TextView confirmId, messageTitle;
     Button approvalBtn, rejectBtn, doneBtn;
     FirebaseFirestore db;
     String NOTIFICATION_TITLE;
@@ -60,6 +60,7 @@ public class OrderConfirmActivity extends AppCompatActivity {
         approvalBtn = findViewById(R.id.approvalButon);
         rejectBtn = findViewById(R.id.rejectButon);
         doneBtn = findViewById(R.id.doneButon);
+        messageTitle = findViewById(R.id.order_title);
 
 
         if (getIntent().getStringExtra("NEW_ORDER_ID") != null) {
@@ -69,6 +70,7 @@ public class OrderConfirmActivity extends AppCompatActivity {
             LinearLayout approveLayout = findViewById(R.id.layoutApprove);
             approveLayout.setVisibility(View.GONE);
             doneBtn.setVisibility(View.VISIBLE);
+            messageTitle.setText("Finish Order");
         }
 
         confirmId.setText("Order Id : " + orderId);
