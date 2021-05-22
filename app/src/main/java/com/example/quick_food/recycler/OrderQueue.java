@@ -83,8 +83,6 @@ public class OrderQueue extends AppCompatActivity {
         });
 
 
-
-
     }
 
     @Override
@@ -111,20 +109,22 @@ public class OrderQueue extends AppCompatActivity {
 
                                 final String status = document.getString("Status");
                                 final String userId = document.getString("userId");
+                                final String totalCost = document.getString("Total");
+                                final Double totalItems = document.getDouble("TotalItems");
 
                                 if (isVendorLogged.equals("")) {
                                     if (currentUserId.equals(userId)) {
                                         if (isOngingOrders) {
 
                                             if (status.equals("P") || status.equals("A") || status.equals("C")) {
-                                                orderDetails = new OrderDetails(document.getId(), status, userId);
+                                                orderDetails = new OrderDetails(document.getId(), status, userId, totalCost, String.valueOf(totalItems));
                                                 orderDetailsList.add(orderDetails);
                                             }
 
                                         } else {
 
                                             if (status.equals("R") || status.equals("D")) {
-                                                orderDetails = new OrderDetails(document.getId(), status, userId);
+                                                orderDetails = new OrderDetails(document.getId(), status, userId, totalCost, String.valueOf(totalItems));
                                                 orderDetailsList.add(orderDetails);
                                             }
 
@@ -135,7 +135,7 @@ public class OrderQueue extends AppCompatActivity {
 
                                     if (isOngingOrders) {
                                         if (status.equals("P") || status.equals("A") || status.equals("C")) {
-                                            orderDetails = new OrderDetails(document.getId(), status, userId);
+                                            orderDetails = new OrderDetails(document.getId(), status, userId, totalCost, String.valueOf(totalItems));
                                             orderDetailsList.add(orderDetails);
 
                                         }
@@ -143,7 +143,7 @@ public class OrderQueue extends AppCompatActivity {
                                     } else {
 
                                         if (status.equals("R") || status.equals("D")) {
-                                            orderDetails = new OrderDetails(document.getId(), status, userId);
+                                            orderDetails = new OrderDetails(document.getId(), status, userId, totalCost, String.valueOf(totalItems));
                                             orderDetailsList.add(orderDetails);
 
                                         }

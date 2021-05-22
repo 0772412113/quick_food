@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/helmetDetailsCard"
+        android:id="@+id/orderDetailsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
@@ -15,29 +15,53 @@
 
 
         <LinearLayout
-            android:id="@+id/layout_total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="3">
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/order_status_text"
+            <LinearLayout
+                android:id="@+id/layout_total"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="S"
-                android:textAlignment="center"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/order_id_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Order Id"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/order_status_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="S"
+                    android:textAlignment="textEnd"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/order_id_text"
-                android:layout_width="match_parent"
+                android:id="@+id/order_items_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Order Id"
-                android:textAlignment="center"
-                android:textSize="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/order_total_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="TextView"
                 android:textStyle="bold" />
         </LinearLayout>
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/vendor_message_background"
+    android:background="#CAC8BA"
     android:orientation="vertical"
     android:padding="20dp"
     tools:context=".OrderConfirmActivity">
@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/order_title"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -22,13 +22,17 @@
 
     <TextView
         android:id="@+id/confirm_id"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Loading.."
         android:textColor="@android:color/white"
         android:textSize="25sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_cart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
 
     <LinearLayout
         android:id="@+id/layoutApprove"
@@ -41,21 +45,21 @@
             android:id="@+id/approvalButon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/buttons"
             android:padding="17dp"
             android:text="Approve"
             android:textColor="@android:color/white"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/rejectButon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/cancel_buttons"
@@ -69,8 +73,8 @@
         android:id="@+id/doneButon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/buttons"

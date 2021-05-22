@@ -22,11 +22,13 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
     Context mContext;
     List<CartDetails> myCartList;
+    Boolean fromMyCart;
 
 
-    public CartViewAdapter(Context mContext, List<CartDetails> myCartList) {
+    public CartViewAdapter(Context mContext, List<CartDetails> myCartList, Boolean fromMyCart) {
         this.mContext = mContext;
         this.myCartList = myCartList;
+        this.fromMyCart = fromMyCart;
     }
 
     @Override
@@ -39,6 +41,11 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final CartViewHolder CardViewHolder, final int i) {
+
+        if(!fromMyCart){
+            CardViewHolder.imageDelete.setVisibility(View.GONE);
+        }
+
         final String nameOfFood = myCartList.get(i).getFoodName();
 
         CardViewHolder.mTitle.setText(nameOfFood);

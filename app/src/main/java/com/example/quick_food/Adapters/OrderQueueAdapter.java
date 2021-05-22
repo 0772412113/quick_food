@@ -2,6 +2,7 @@ package com.example.quick_food.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,11 @@ public class OrderQueueAdapter extends RecyclerView.Adapter<OrderQueueHolder> {
 
 
     Context mContext;
-    private List<OrderDetails> myOrderDetails;
+    private final List<OrderDetails> myOrderDetails;
 
-    public OrderQueueAdapter(Context mContext, List<OrderDetails> myHelmetDetails) {
+    public OrderQueueAdapter(Context mContext, List<OrderDetails> myOrderDetails) {
         this.mContext = mContext;
-        this.myOrderDetails = myHelmetDetails;
+        this.myOrderDetails = myOrderDetails;
     }
 
 
@@ -39,14 +40,43 @@ public class OrderQueueAdapter extends RecyclerView.Adapter<OrderQueueHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final OrderQueueHolder helmetFinder, final int i) {
+    public void onBindViewHolder(@NonNull final OrderQueueHolder orderFinder, final int i) {
 
         final String OrderId = myOrderDetails.get(i).getOrderId();
-        helmetFinder.orderStatus.setText(myOrderDetails.get(i).getStatus());
-        helmetFinder.OrderId.setText(OrderId);
+        final String orderStatus = myOrderDetails.get(i).getStatus();
+
+        switch (orderStatus) {
+            case "C":
+                orderFinder.orderStatus.setText("Complete");
+                orderFinder.orderStatus.setTextColor(Color.parseColor("#2fb55e"));
+                break;
+            case "P":
+                orderFinder.orderStatus.setText("Pending");
+                orderFinder.orderStatus.setTextColor(Color.parseColor("#2f4eb5"));
+                break;
+            case "A":
+                orderFinder.orderStatus.setText("Approved");
+                orderFinder.orderStatus.setTextColor(Color.parseColor("#792fb5"));
+                break;
+            case "R":
+                orderFinder.orderStatus.setText("Rejected");
+                orderFinder.orderStatus.setTextColor(Color.parseColor("#b52f62"));
+                break;
+            case "D":
+                orderFinder.orderStatus.setText("Done");
+                orderFinder.orderStatus.setTextColor(Color.parseColor("#b5b52f"));
+                break;
+            default:
+                orderFinder.orderStatus.setText(orderStatus);
+                break;
+        }
+
+        orderFinder.OrderId.setText(OrderId);
+        orderFinder.totalItems.setText("Items : " + myOrderDetails.get(i).getTotalItems());
+        orderFinder.totalText.setText("Total : " + myOrderDetails.get(i).getTotalCost() + " RS");
 
 
-        helmetFinder.hCardView.setOnClickListener(new View.OnClickListener() {
+        orderFinder.hCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MyCartActivity.class);
@@ -67,7 +97,7 @@ public class OrderQueueAdapter extends RecyclerView.Adapter<OrderQueueHolder> {
 
 class OrderQueueHolder extends RecyclerView.ViewHolder {
 
-    TextView orderStatus, OrderId;
+    TextView orderStatus, OrderId, totalItems, totalText;
     CardView hCardView;
 
     public OrderQueueHolder(View itemView) {
@@ -75,7 +105,9 @@ class OrderQueueHolder extends RecyclerView.ViewHolder {
 
         orderStatus = itemView.findViewById(R.id.order_status_text);
         OrderId = itemView.findViewById(R.id.order_id_text);
-        hCardView = itemView.findViewById(R.id.helmetDetailsCard);
+        totalItems = itemView.findViewById(R.id.order_items_text);
+        totalText = itemView.findViewById(R.id.order_total_text);
+        hCardView = itemView.findViewById(R.id.orderDetailsCard);
 
     }
 }
