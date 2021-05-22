@@ -47,7 +47,7 @@ public class MainFoodCategoryAdapter extends RecyclerView.Adapter<MainFoodViewHo
         String foodImage = myFoodList.get(i).getItemImage();
         Picasso.get()
                 .load(foodImage)
-                .placeholder(R.drawable.image_loading)
+                .placeholder(R.drawable.walking_food)
                 .into(foodViewHolder.imageView);
 
         foodViewHolder.mTitle.setText(myFoodList.get(i).getItemName());

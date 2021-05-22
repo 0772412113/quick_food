@@ -47,7 +47,7 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder>{
         String foodImage = myCartList.get(i).getItemImage();
         Picasso.get()
                 .load(foodImage)
-                .placeholder(R.drawable.image_loading)
+                .placeholder(R.drawable.walking_food)
                 .into(CardViewHolder.imageView);
 
         CardViewHolder.imageDelete.setOnClickListener(new View.OnClickListener() {

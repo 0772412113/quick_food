@@ -47,7 +47,7 @@ public class FoodDetailAdapter extends RecyclerView.Adapter<FoodDeailHolder>{
         final String foodImage = myFoodDetailList.get(i).getItemImage();
         Picasso.get()
                 .load(foodImage)
-                .placeholder(R.drawable.image_loading)
+                .placeholder(R.drawable.walking_food)
                 .into(foodDeailHolder.fimageView);
 
         foodDeailHolder.fdTitle.setText(foodName);

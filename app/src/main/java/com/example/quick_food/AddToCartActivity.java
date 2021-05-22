@@ -58,7 +58,7 @@ public class AddToCartActivity extends AppCompatActivity {
 
         Picasso.get()
                 .load(foodImage)
-                .placeholder(R.drawable.image_loading)
+                .placeholder(R.drawable.walking_food)
                 .into(imageViewCart);
 
 
