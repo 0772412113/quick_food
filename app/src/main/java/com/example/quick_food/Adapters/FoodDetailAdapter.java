@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import static com.example.quick_food.Utils.selectedFoodItem;
+
 public class FoodDetailAdapter extends RecyclerView.Adapter<FoodDeailHolder>{
 
     private Context fdContext;
@@ -56,6 +58,8 @@ public class FoodDetailAdapter extends RecyclerView.Adapter<FoodDeailHolder>{
         foodDeailHolder.maddToCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                selectedFoodItem = myFoodDetailList.get(i);
 
                 Intent intent = new Intent(fdContext, AddToCartActivity.class);
                 intent.putExtra("FOOD_ID_FOR_CART", foodID);

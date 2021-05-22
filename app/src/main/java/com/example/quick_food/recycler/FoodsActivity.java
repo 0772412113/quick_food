@@ -99,6 +99,12 @@ public class FoodsActivity extends AppCompatActivity {
                                     final String Title = document.getString("name");
                                     final String image = document.getString("image");
                                     final String description = document.getString("price");
+                                    final String SizeOne = document.getString("SizeOne");
+                                    final String SizeTwo = document.getString("SizeTwo");
+                                    final String SizeThree = document.getString("SizeThree");
+                                    final String AdderOne = document.getString("AdderOne");
+                                    final String AdderTwo = document.getString("AdderTwo");
+                                    final String AdderThree = document.getString("AdderThree");
 
                                     StorageReference storageRef = storage.getReference();
                                     StorageReference downloadRef = storageRef.child("Foods/" + image);
@@ -108,7 +114,7 @@ public class FoodsActivity extends AppCompatActivity {
                                             Log.d("Doc1", " => " + uri);
                                             String imageURI = uri.toString();
 
-                                            fFoodDetails = new FoodDetails(id, Title, description, imageURI);
+                                            fFoodDetails = new FoodDetails(id, Title, description, imageURI, SizeOne, SizeTwo, SizeThree, AdderOne, AdderTwo, AdderThree);
                                             myfoodDetailList.add(fFoodDetails);
 
                                             FoodDetailAdapter foodDetailAdapter = new FoodDetailAdapter(FoodsActivity.this, myfoodDetailList);
