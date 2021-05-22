@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quick_food.Adapters.FoodDetailAdapter;
+import com.example.quick_food.FoodItemEditActivity;
 import com.example.quick_food.GetterSetters.FoodDetails;
 import com.example.quick_food.QRCodeScanner;
 import com.example.quick_food.R;
@@ -45,12 +48,14 @@ public class FoodsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseStorage storage;
     KProgressHUD progressHUD;
+    String foodId;
+    Button addNewButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foods);
-        getSupportActionBar().setTitle("Select Food");
+
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -58,6 +63,7 @@ public class FoodsActivity extends AppCompatActivity {
         }
 
         fRecycleView = (RecyclerView) findViewById(R.id.recycleFoodView);
+        addNewButton = findViewById(R.id.button_add_new);
 
         progressHUD = KProgressHUD.create(FoodsActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -70,9 +76,27 @@ public class FoodsActivity extends AppCompatActivity {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(FoodsActivity.this, 1);
         fRecycleView.setLayoutManager(gridLayoutManager);
+        foodId = getIntent().getStringExtra("EXTRA_FOOD_ID");
+
+        if (foodId != null) {
+            getSupportActionBar().setTitle("Select Food");
+            setDatalist();
+            addNewButton.setVisibility(View.GONE);
+        } else {
+            getSupportActionBar().setTitle("Food Items");
+            setDatalistDelete();
+        }
+
+        addNewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(FoodsActivity.this, FoodItemEditActivity.class);
+                startActivity(intent);
 
 
-        setDatalist();
+            }
+        });
 
     }
 
@@ -81,7 +105,6 @@ public class FoodsActivity extends AppCompatActivity {
         progressHUD.show();
         db = FirebaseFirestore.getInstance();
         myfoodDetailList = new ArrayList<>();
-        final String foodId = getIntent().getStringExtra("EXTRA_FOOD_ID");
 
         db.collection("Foods")
                 .get()
@@ -117,7 +140,7 @@ public class FoodsActivity extends AppCompatActivity {
                                             fFoodDetails = new FoodDetails(id, Title, description, imageURI, SizeOne, SizeTwo, SizeThree, AdderOne, AdderTwo, AdderThree);
                                             myfoodDetailList.add(fFoodDetails);
 
-                                            FoodDetailAdapter foodDetailAdapter = new FoodDetailAdapter(FoodsActivity.this, myfoodDetailList);
+                                            FoodDetailAdapter foodDetailAdapter = new FoodDetailAdapter(FoodsActivity.this, myfoodDetailList, false);
                                             fRecycleView.setAdapter(foodDetailAdapter);
                                             progressHUD.dismiss();
 
@@ -142,6 +165,71 @@ public class FoodsActivity extends AppCompatActivity {
                 });
     }
 
+
+    private void setDatalistDelete() {
+        progressHUD.show();
+        db = FirebaseFirestore.getInstance();
+        myfoodDetailList = new ArrayList<>();
+
+
+        db.collection("Foods")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Log.d("Doc", document.getId() + " => " + document.getData());
+
+
+                                final String id = document.getString("id");
+                                final String Title = document.getString("name");
+                                final String image = document.getString("image");
+                                final String description = document.getString("price");
+                                final String SizeOne = document.getString("SizeOne");
+                                final String SizeTwo = document.getString("SizeTwo");
+                                final String SizeThree = document.getString("SizeThree");
+                                final String AdderOne = document.getString("AdderOne");
+                                final String AdderTwo = document.getString("AdderTwo");
+                                final String AdderThree = document.getString("AdderThree");
+
+                                StorageReference storageRef = storage.getReference();
+                                StorageReference downloadRef = storageRef.child("Foods/" + image);
+                                downloadRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Log.d("Doc1", " => " + uri);
+                                        String imageURI = uri.toString();
+
+                                        fFoodDetails = new FoodDetails(id, Title, description, imageURI, SizeOne, SizeTwo, SizeThree, AdderOne, AdderTwo, AdderThree);
+                                        myfoodDetailList.add(fFoodDetails);
+
+                                        FoodDetailAdapter foodDetailAdapter = new FoodDetailAdapter(FoodsActivity.this, myfoodDetailList, true);
+                                        fRecycleView.setAdapter(foodDetailAdapter);
+                                        progressHUD.dismiss();
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        //   Toast.makeText(getActivity(), "Error getting Data", Toast.LENGTH_LONG).show();
+                                        Log.d("Doc", "Error getting Data: ");
+                                        progressHUD.dismiss();
+                                    }
+                                });
+
+                            }
+
+
+                        } else {
+                            Log.d("Doc", "Error getting documents: ", task.getException());
+                            progressHUD.dismiss();
+                        }
+                    }
+                });
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
@@ -155,12 +243,16 @@ public class FoodsActivity extends AppCompatActivity {
 
         MenuItem QRScanner = menu.findItem(R.id.QR_scanner);
         MenuItem OrderQueue = menu.findItem(R.id.Orders);
+        MenuItem cart_icon_menu = menu.findItem(R.id.cart_icon_menu);
+        MenuItem profile_menu = menu.findItem(R.id.profile_menu);
 
         if (!theVender.equals("")) {
             userIsVender = true;
 
-            QRScanner.setVisible(true);
+            QRScanner.setVisible(false);
             OrderQueue.setVisible(false);
+            cart_icon_menu.setVisible(false);
+            profile_menu.setVisible(false);
 
 
         }

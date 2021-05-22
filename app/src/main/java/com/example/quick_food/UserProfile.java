@@ -14,6 +14,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.quick_food.recycler.FoodsActivity;
 import com.example.quick_food.recycler.OrderQueue;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -76,7 +77,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(UserProfile.this, FoodItemEditActivity.class);
+                Intent intent = new Intent(UserProfile.this, FoodsActivity.class);
                 startActivity(intent);
 
 

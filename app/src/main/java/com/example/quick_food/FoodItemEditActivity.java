@@ -287,13 +287,6 @@ public class FoodItemEditActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(FoodItemEditActivity.this, UserProfile.class);
-        startActivity(intent);
-        finish();
-    }
-
     void showAlert(String message) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(FoodItemEditActivity.this);
 
