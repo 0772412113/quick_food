@@ -35,7 +35,7 @@ class ShareBarcode : AppCompatActivity() {
         val writer = QRCodeWriter()
         imageQR = findViewById(R.id.weww)
         buttonSend = findViewById(R.id.button_send)
-        qrTextView = findViewById(R.id.helmet_id_text)
+        qrTextView = findViewById(R.id.order_id_text)
 
         val qrText = intent.getStringExtra("DECRYPTDATA")
 

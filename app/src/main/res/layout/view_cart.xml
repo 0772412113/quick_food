@@ -16,7 +16,7 @@
             android:layout_weight="1"
             android:gravity="end"
             android:text="Total : "
-            android:textSize="20dp"></TextView>
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/tv_total"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="0 Rs"
-            android:textSize="20dp"></TextView>
+            android:textSize="20dp" />
     </LinearLayout>
 
 
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/btn_placeorder"
-        android:layout_below="@+id/layout_total"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@+id/layout_total" />
 
 
     <Button

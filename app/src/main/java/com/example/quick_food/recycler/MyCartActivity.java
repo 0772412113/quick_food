@@ -126,7 +126,7 @@ public class MyCartActivity extends AppCompatActivity {
 
             method();
 
-            CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList);
+            CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList, true);
             mRecycleView.setAdapter(myAdapter);
         }
 
@@ -242,16 +242,19 @@ public class MyCartActivity extends AppCompatActivity {
 
                     progressHUD.show();
                     Random rand = new Random();
-                    int n = rand.nextInt(10000);
-                    //final String docPath = UUID.randomUUID().toString().replace("-", "");
-                    final String docPath = String.valueOf(n);
+                    int n = rand.nextInt(10000 - 1000);
+                    final String docPath = "QF" + n;
 
                     Map<String, Object> get_data = new HashMap<>();
                     get_data.put("Status", "P");
                     get_data.put("userId", prefs.getString("loggedUserId", ""));
+                    get_data.put("Total", String.valueOf(totalValueForAllCart));
+                    get_data.put("TotalItems", myCartList.size());
+
 
                     for (int i = 0; i < myCartList.size(); i++) {
-                        get_data.put(myCartList.get(i).getFoodId(), "0");
+                        String data = myCartList.get(i).getFoodId() + ",_" + myCartList.get(i).getFoodName() + ",_" + myCartList.get(i).getFoodPrice() + ",_" + myCartList.get(i).getItemImage() + ",_" + myCartList.get(i).getAddersAndSizes();
+                        get_data.put("Item_" + i, data);
                     }
 
                     Log.e("DocPath >>", docPath);
@@ -304,6 +307,8 @@ public class MyCartActivity extends AppCompatActivity {
         progressHUD.show();
         db = FirebaseFirestore.getInstance();
 
+        getSupportActionBar().setTitle("View Cart - " + curentOrderId);
+
         db.collection("OrderDetails")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -311,10 +316,8 @@ public class MyCartActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
                                 Log.d("Doc", document.getId() + " => " + document.getData());
 
-                                // final String userId = document.getString("userId");
                                 if (document.getId().equals(curentOrderId)) {
                                     orderStatus = document.getString("Status");
                                     if (isVendorLogged.equals("")) {
@@ -332,6 +335,37 @@ public class MyCartActivity extends AppCompatActivity {
                                             placeOrderBtn.setVisibility(View.GONE);
                                         }
                                     }
+
+                                    Double totalItems = document.getDouble("TotalItems");
+                                    CartDetails newCartData;
+                                    List<CartDetails> newCartList;
+                                    newCartList = new ArrayList<>();
+
+                                    for (int i = 0; i < totalItems; i++) {
+                                        String data = document.getString("Item_" + i);
+
+                                        assert data != null;
+                                        String foodId = data.substring(0, data.indexOf(",_"));
+                                        String s1remainder = data.substring(data.indexOf(",_") + 2);
+
+                                        String foodName = s1remainder.substring(0, s1remainder.indexOf(",_"));
+                                        String s2remainder = s1remainder.substring(s1remainder.indexOf(",_") + 2);
+
+                                        String foodPrice = s2remainder.substring(0, s2remainder.indexOf(",_"));
+                                        String s3remainder = s2remainder.substring(s2remainder.indexOf(",_") + 2);
+
+                                        String foodImage = s3remainder.substring(0, s3remainder.indexOf(",_"));
+                                        String s4remainder = s3remainder.substring(s3remainder.indexOf(",_") + 2);
+
+                                        newCartData = new CartDetails(foodId, foodName, foodPrice, foodImage, s4remainder);
+                                        newCartList.add(newCartData);
+                                    }
+
+
+                                    CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, newCartList, false);
+                                    mRecycleView.setAdapter(myAdapter);
+
+                                    mTxtTotalForCart.setText(document.getString("Total"));
                                 }
 
                                 progressHUD.dismiss();
@@ -353,9 +387,11 @@ public class MyCartActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        myCartList.clear();
-                        CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList);
-                        mRecycleView.setAdapter(myAdapter);
+                        if (myCartList != null) {
+                            myCartList.clear();
+                            CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList, true);
+                            mRecycleView.setAdapter(myAdapter);
+                        }
 
                         progressHUD.dismiss();
                         Toast.makeText(MyCartActivity.this, "Successfully sent", Toast.LENGTH_LONG).show();

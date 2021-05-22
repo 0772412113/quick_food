@@ -2,12 +2,14 @@ package com.example.quick_food.GetterSetters;
 
 public class OrderDetails {
 
-    private String orderId, status, userId;
+    private String orderId, status, userId, totalCost, totalItems;
 
-    public OrderDetails(String orderId, String status, String userId) {
+    public OrderDetails(String orderId, String status, String userId, String totalCost, String totalItems) {
         this.orderId = orderId;
         this.status = status;
         this.userId = userId;
+        this.totalCost = totalCost;
+        this.totalItems = totalItems;
     }
 
     public String getOrderId() {
@@ -32,5 +34,21 @@ public class OrderDetails {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(String totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public String getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(String totalItems) {
+        this.totalItems = totalItems;
     }
 }

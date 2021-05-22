@@ -11,12 +11,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.quick_food.Adapters.CartViewAdapter;
 import com.example.quick_food.Firebase.MySingleton;
+import com.example.quick_food.GetterSetters.CartDetails;
 import com.example.quick_food.recycler.MainFoodCategoryActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,7 +34,9 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.quick_food.Utils.FCM_API;
@@ -49,6 +55,7 @@ public class OrderConfirmActivity extends AppCompatActivity {
     String contentType = "application/json";
     String userId;
     String orderId;
+    RecyclerView mRecycleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,11 @@ public class OrderConfirmActivity extends AppCompatActivity {
         doneBtn = findViewById(R.id.doneButon);
         messageTitle = findViewById(R.id.order_title);
 
+        mRecycleView = (RecyclerView) findViewById(R.id.recycler_cart);
+
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(OrderConfirmActivity.this, 1);
+        mRecycleView.setLayoutManager(gridLayoutManager);
 
         if (getIntent().getStringExtra("NEW_ORDER_ID") != null) {
             orderId = getIntent().getStringExtra("NEW_ORDER_ID");
@@ -101,7 +113,40 @@ public class OrderConfirmActivity extends AppCompatActivity {
 
                                 if (document.getId().equals(orderId)) {
                                     userId = document.getString("userId");
+
+                                    Double totalItems = document.getDouble("TotalItems");
+                                    CartDetails newCartData;
+                                    List<CartDetails> newCartList;
+                                    newCartList = new ArrayList<>();
+
+                                    for (int i = 0; i < totalItems; i++) {
+                                        String data = document.getString("Item_" + i);
+
+                                        assert data != null;
+                                        String foodId = data.substring(0, data.indexOf(",_"));
+                                        String s1remainder = data.substring(data.indexOf(",_") + 2);
+
+                                        String foodName = s1remainder.substring(0, s1remainder.indexOf(",_"));
+                                        String s2remainder = s1remainder.substring(s1remainder.indexOf(",_") + 2);
+
+                                        String foodPrice = s2remainder.substring(0, s2remainder.indexOf(",_"));
+                                        String s3remainder = s2remainder.substring(s2remainder.indexOf(",_") + 2);
+
+                                        String foodImage = s3remainder.substring(0, s3remainder.indexOf(",_"));
+                                        String s4remainder = s3remainder.substring(s3remainder.indexOf(",_") + 2);
+
+                                        newCartData = new CartDetails(foodId, foodName, foodPrice, foodImage, s4remainder);
+                                        newCartList.add(newCartData);
+                                    }
+
+
+                                    CartViewAdapter myAdapter = new CartViewAdapter(OrderConfirmActivity.this, newCartList, false);
+                                    mRecycleView.setAdapter(myAdapter);
+
+                                    //  mTxtTotalForCart.setText(document.getString("Total"));
                                 }
+
+
                                 progressHUD.dismiss();
                             }
 
