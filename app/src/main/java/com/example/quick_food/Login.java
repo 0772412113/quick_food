@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.quick_food.recycler.FoodCategory;
+import com.example.quick_food.recycler.MainFoodCategoryActivity;
 import com.example.quick_food.recycler.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,7 +45,7 @@ public class Login extends AppCompatActivity {
 
             String isVendorLogged = prefs.getString("userIsVender", "");
             if (isVendorLogged.equals("")) {
-                startActivity(new Intent(Login.this, FoodCategory.class));
+                startActivity(new Intent(Login.this, MainFoodCategoryActivity.class));
                 finish();
             } else {
                 startActivity(new Intent(Login.this, UserProfile.class));
@@ -89,25 +89,38 @@ public class Login extends AppCompatActivity {
 
                                     Log.e("TAG", dataSnapshot.getKey());
 
-                                    FirebaseMessaging.getInstance().subscribeToTopic(dataSnapshot.getKey())
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    String msg = "Welcome " + userNew.getStuid();
-
-                                                    Log.e("TAG", msg);
-                                                    Toast.makeText(Login.this, msg, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
 
                                     if (theVender == null) {
 
-                                        Intent intent = new Intent(Login.this, FoodCategory.class);
+                                        FirebaseMessaging.getInstance().subscribeToTopic(userNew.getStuid())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        String msg = "Welcome " + userNew.getStuid();
+
+                                                        Log.e("TAG", msg);
+                                                        Toast.makeText(Login.this, msg, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                        Intent intent = new Intent(Login.this, MainFoodCategoryActivity.class);
                                         finish();
                                         startActivity(intent);
                                         editor.apply();
 
                                     } else {
+
+
+                                        FirebaseMessaging.getInstance().subscribeToTopic("ToADMIN")
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        String msg = "Welcome " + userNew.getStuid();
+
+                                                        Log.e("TAG", msg);
+                                                        Toast.makeText(Login.this, msg, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
 
                                         editor.putString("userIsVender", "YES");
 

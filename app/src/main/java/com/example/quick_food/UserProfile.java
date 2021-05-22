@@ -1,10 +1,5 @@
 package com.example.quick_food;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +11,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.quick_food.GetterSetters.OrderDetails;
 import com.example.quick_food.recycler.OrderQueue;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -51,6 +52,10 @@ public class UserProfile extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.e("FCM", "onTokenRefresh completed with token: " + token);
 
         userName = findViewById(R.id.prfile_name);
         userId = findViewById(R.id.prfile_user_id);
@@ -111,6 +116,7 @@ public class UserProfile extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
 
                                 FirebaseMessaging.getInstance().unsubscribeFromTopic(prefs.getString("loggedUserId", ""));
+                                FirebaseMessaging.getInstance().unsubscribeFromTopic("ToADMIN");
 
                                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                                 editor.remove("userPhoneNumber");
@@ -162,7 +168,7 @@ public class UserProfile extends AppCompatActivity {
             Profile.setVisible(false);
             Cart.setVisible(false);
             Order.setVisible(false);
-        }else{
+        } else {
 
             QRScanner.setVisible(false);
             Profile.setVisible(false);
@@ -193,7 +199,6 @@ public class UserProfile extends AppCompatActivity {
     }
 
 
-
     private void setDatalist() {
         progressHUD.show();
         db = FirebaseFirestore.getInstance();
@@ -215,7 +220,7 @@ public class UserProfile extends AppCompatActivity {
                                 final String helmetUser = document.getString("user");
                                 final String helmetUserEmail = document.getString("email");
 
-                                mOrderData = new OrderDetails( helmetHid,helmetName,helmetType,helmetUser,helmetUserEmail);
+                                mOrderData = new OrderDetails(helmetHid, helmetName, helmetType, helmetUser, helmetUserEmail);
                                 myOrderDetails.add(mOrderData);
 
                                 progressHUD.dismiss();

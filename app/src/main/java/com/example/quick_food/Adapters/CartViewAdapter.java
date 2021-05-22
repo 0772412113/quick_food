@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quick_food.GetterSetters.CartDetails;
 import com.example.quick_food.R;
-import com.example.quick_food.recycler.CartView;
+import com.example.quick_food.recycler.MyCartActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder>{
             public void onClick(View v) {
 
                 myCartList.remove(i);
-                CartView.method();
+                MyCartActivity.method();
                 notifyDataSetChanged();
             }
         });

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quick_food.GetterSetters.FoodDetails;
 import com.example.quick_food.R;
-import com.example.quick_food.Cart;
+import com.example.quick_food.AddToCartActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,7 +40,8 @@ public class FoodDetailAdapter extends RecyclerView.Adapter<FoodDeailHolder>{
     @Override
     public void onBindViewHolder(@NonNull FoodDeailHolder foodDeailHolder, final int i) {
 
-        final String foodID = myFoodDetailList.get(i).getFoodName();
+        final String foodID = myFoodDetailList.get(i).getFoodId();
+        final String foodName = myFoodDetailList.get(i).getFoodName();
         final String foodPrice = myFoodDetailList.get(i).getFoodPrice();
 
         final String foodImage = myFoodDetailList.get(i).getItemImage();
@@ -49,15 +50,16 @@ public class FoodDetailAdapter extends RecyclerView.Adapter<FoodDeailHolder>{
                 .placeholder(R.drawable.image_loading)
                 .into(foodDeailHolder.fimageView);
 
-        foodDeailHolder.fdTitle.setText(foodID);
+        foodDeailHolder.fdTitle.setText(foodName);
         foodDeailHolder.fdPrice.setText(foodPrice);
 
         foodDeailHolder.maddToCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(fdContext, Cart.class);
+                Intent intent = new Intent(fdContext, AddToCartActivity.class);
                 intent.putExtra("FOOD_ID_FOR_CART", foodID);
+                intent.putExtra("FOOD_NAME_FOR_CART", foodName);
                 intent.putExtra("FOOD_IMAGE_FOR_CART", foodImage);
                 intent.putExtra("FOOD_PRICE_FOR_CART", foodPrice);
                 fdContext.startActivity(intent);

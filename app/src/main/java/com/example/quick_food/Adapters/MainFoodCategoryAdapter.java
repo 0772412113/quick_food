@@ -14,34 +14,34 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quick_food.GetterSetters.FoodData;
 import com.example.quick_food.R;
-import com.example.quick_food.recycler.Foods;
+import com.example.quick_food.recycler.FoodsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 
-public class FoodCategoryAdapter extends RecyclerView.Adapter<FoodViewHolder> {
+public class MainFoodCategoryAdapter extends RecyclerView.Adapter<MainFoodViewHolder> {
 
 
     Context mContext;
     List<FoodData> myFoodList;
 
 
-    public FoodCategoryAdapter(Context mContext, List<FoodData> myFoodList) {
+    public MainFoodCategoryAdapter(Context mContext, List<FoodData> myFoodList) {
         this.mContext = mContext;
         this.myFoodList = myFoodList;
     }
 
     @Override
-    public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public MainFoodViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View mView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_row_it, viewGroup, false);
 
-        return new FoodViewHolder(mView);
+        return new MainFoodViewHolder(mView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final FoodViewHolder foodViewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final MainFoodViewHolder foodViewHolder, final int i) {
         final String idOfFood = myFoodList.get(i).getId();
 
         String foodImage = myFoodList.get(i).getItemImage();
@@ -58,7 +58,7 @@ public class FoodCategoryAdapter extends RecyclerView.Adapter<FoodViewHolder> {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(mContext, Foods.class);
+                Intent intent = new Intent(mContext, FoodsActivity.class);
                 intent.putExtra("EXTRA_FOOD_ID", idOfFood);
                 mContext.startActivity(intent);
             }
@@ -73,7 +73,7 @@ public class FoodCategoryAdapter extends RecyclerView.Adapter<FoodViewHolder> {
     }
 }
 
-class FoodViewHolder extends RecyclerView.ViewHolder {
+class MainFoodViewHolder extends RecyclerView.ViewHolder {
 
 
     ImageView imageView;
@@ -81,7 +81,7 @@ class FoodViewHolder extends RecyclerView.ViewHolder {
     CardView mCardView;
 
 
-    public FoodViewHolder(View itemView) {
+    public MainFoodViewHolder(View itemView) {
         super(itemView);
 
         imageView = itemView.findViewById(R.id.ivImage);

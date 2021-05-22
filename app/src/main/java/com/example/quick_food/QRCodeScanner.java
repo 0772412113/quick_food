@@ -88,11 +88,10 @@ public class QRCodeScanner extends AppCompatActivity implements ZXingScannerView
     private void processRawResult(String text) {
 
         Log.e("QRScan>>",text);
-        txtResult.setText(text);
-//        Intent intent = new Intent(this, SendMessageActivity.class);
-//        intent.putExtra("SCANED_HELMET_ID", text);
-//        this.startActivity(intent);
-//        finish();
+        Intent intent = new Intent(this, OrderConfirmActivity.class);
+        intent.putExtra("NEW_ORDER_ID_QR", text);
+        this.startActivity(intent);
+        finish();
     }
 
     @Override

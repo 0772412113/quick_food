@@ -46,6 +46,6 @@
         android:onClick="insertOrder"
         android:text="Place Order"
         android:background="@color/common_google_signin_btn_text_dark_focused"
-        android:textColor="@android:color/white"></Button>
+        android:textColor="@android:color/white" />
 
 </RelativeLayout>

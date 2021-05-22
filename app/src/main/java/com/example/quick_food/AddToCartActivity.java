@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.quick_food.recycler.CartView;
+import com.example.quick_food.recycler.MyCartActivity;
 import com.squareup.picasso.Picasso;
 
-public class Cart extends AppCompatActivity {
+public class AddToCartActivity extends AppCompatActivity {
 
     TextView mTitle, mTxtOneOne, mTxtOneTwo, mTxtTwoOne, mTxtTwoTwo, mTxtTwoThree, mTxtTotal;
     ImageView imageViewCart;
@@ -35,6 +35,7 @@ public class Cart extends AppCompatActivity {
 
         final String foodImage = getIntent().getStringExtra("FOOD_IMAGE_FOR_CART");
         final String foodId = getIntent().getStringExtra("FOOD_ID_FOR_CART");
+        final String foodName = getIntent().getStringExtra("FOOD_NAME_FOR_CART");
         final String price = getIntent().getStringExtra("FOOD_PRICE_FOR_CART");
 
         mTitle = findViewById(R.id.txt_cart_product_name);
@@ -52,7 +53,7 @@ public class Cart extends AppCompatActivity {
         double priceInInt = Double.parseDouble(price);
         priceDouble = priceInInt;
 
-        mTitle.setText(foodId);
+        mTitle.setText(foodName);
         mTxtTotal.setText(String.valueOf(priceDouble));
 
         Picasso.get()
@@ -116,10 +117,11 @@ public class Cart extends AppCompatActivity {
                 } else {
                     finalPrice = totalValue;
                 }
-                Intent intent = new Intent(Cart.this, CartView.class);
+                Intent intent = new Intent(AddToCartActivity.this, MyCartActivity.class);
                 intent.putExtra("image_Name", foodImage);
                 intent.putExtra("total_price", String.valueOf(finalPrice));
-                intent.putExtra("item_name", foodId);
+                intent.putExtra("item_name", foodName);
+                intent.putExtra("item_id", foodId);
                 startActivity(intent);
                 finish();
             }
