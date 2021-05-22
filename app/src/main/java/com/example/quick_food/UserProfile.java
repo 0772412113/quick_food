@@ -76,7 +76,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(UserProfile.this, foodEdit.class);
+                Intent intent = new Intent(UserProfile.this, FoodItemEditActivity.class);
                 startActivity(intent);
 
 
