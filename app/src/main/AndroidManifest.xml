@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ItemList"></activity>
-        <activity android:name=".OrderQueue" />
+        <activity android:name=".recycler.OrderQueue" />
         <activity android:name=".UserProfile" />
         <activity android:name=".QRCodeScanner" />
         <activity android:name=".PaymentDetails" />

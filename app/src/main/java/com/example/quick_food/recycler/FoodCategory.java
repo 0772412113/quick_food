@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quick_food.Adapters.FoodCategoryAdapter;
 import com.example.quick_food.GetterSetters.FoodData;
-import com.example.quick_food.OrderQueue;
 import com.example.quick_food.QRCodeScanner;
 import com.example.quick_food.R;
 import com.example.quick_food.UserProfile;
