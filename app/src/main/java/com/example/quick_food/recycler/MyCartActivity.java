@@ -105,7 +105,7 @@ public class MyCartActivity extends AppCompatActivity {
 
         if (getIntent().getStringExtra("EXTRA_ORDER_ID") != null) {
             curentOrderId = getIntent().getStringExtra("EXTRA_ORDER_ID");
-            currentUserId =  getIntent().getStringExtra("EXTRA_ORDER_USER_ID");
+            currentUserId = getIntent().getStringExtra("EXTRA_ORDER_USER_ID");
             setDatalist();
 
         } else {
@@ -117,9 +117,10 @@ public class MyCartActivity extends AppCompatActivity {
             final String foodName = getIntent().getStringExtra("item_name");
             final String foodPrice = getIntent().getStringExtra("total_price");
             final String foodId = getIntent().getStringExtra("item_id");
+            final String addersAndSizes = getIntent().getStringExtra("selected_adders_sizes");
 
             if (foodId != null) {
-                mcartData = new CartDetails(foodId, foodName, foodPrice, foodImage);
+                mcartData = new CartDetails(foodId, foodName, foodPrice, foodImage, addersAndSizes);
                 myCartList.add(mcartData);
             }
 
@@ -351,6 +352,11 @@ public class MyCartActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        myCartList.clear();
+                        CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList);
+                        mRecycleView.setAdapter(myAdapter);
+
                         progressHUD.dismiss();
                         Toast.makeText(MyCartActivity.this, "Successfully sent", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "onResponse: " + response.toString());

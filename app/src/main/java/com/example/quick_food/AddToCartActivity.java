@@ -248,11 +248,27 @@ public class AddToCartActivity extends AppCompatActivity {
                 } else {
                     finalPrice = totalValue;
                 }
+
+                String sizeSelector = "";
+
+                if (sizeLayout.getVisibility() == View.VISIBLE) {
+                    int selectedId = radioGroupOne.getCheckedRadioButtonId();
+                    RadioButton radioButton = (RadioButton) findViewById(selectedId);
+                    sizeSelector = sizeSelector + (String) radioButton.getText();
+                }
+
+                if (adderLayout.getVisibility() == View.VISIBLE) {
+                    int selectedId = radioGroupTwo.getCheckedRadioButtonId();
+                    RadioButton radioButton = (RadioButton) findViewById(selectedId);
+                    sizeSelector = sizeSelector + ", "+ (String) radioButton.getText();
+                }
+
                 Intent intent = new Intent(AddToCartActivity.this, MyCartActivity.class);
                 intent.putExtra("image_Name", foodImage);
                 intent.putExtra("total_price", String.valueOf(finalPrice));
                 intent.putExtra("item_name", foodName);
                 intent.putExtra("item_id", foodId);
+                intent.putExtra("selected_adders_sizes", sizeSelector);
                 startActivity(intent);
                 finish();
             }

@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder>{
+public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
 
     Context mContext;
@@ -43,6 +43,14 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder>{
 
         CardViewHolder.mTitle.setText(nameOfFood);
         CardViewHolder.mPrice.setText(myCartList.get(i).getFoodPrice());
+
+        String adderSizeText = myCartList.get(i).getAddersAndSizes();
+
+        if (adderSizeText.equals("")) {
+            CardViewHolder.mAdderText.setVisibility(View.GONE);
+        } else {
+            CardViewHolder.mAdderText.setText(adderSizeText);
+        }
 
         String foodImage = myCartList.get(i).getItemImage();
         Picasso.get()
@@ -73,7 +81,7 @@ public class CartViewAdapter extends RecyclerView.Adapter<CartViewHolder>{
 class CartViewHolder extends RecyclerView.ViewHolder {
 
     ImageView imageView, imageDelete;
-    TextView mTitle, mPrice;
+    TextView mTitle, mPrice, mAdderText;
 
 
     public CartViewHolder(View itemView) {
@@ -83,6 +91,7 @@ class CartViewHolder extends RecyclerView.ViewHolder {
         mTitle = itemView.findViewById(R.id.tite_text);
         mPrice = itemView.findViewById(R.id.category_text);
         imageDelete = itemView.findViewById(R.id.delete_image);
+        mAdderText = itemView.findViewById(R.id.size_adder_text);
 
     }
 }

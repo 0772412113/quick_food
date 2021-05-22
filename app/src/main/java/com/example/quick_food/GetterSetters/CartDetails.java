@@ -6,14 +6,15 @@ public class CartDetails {
     private String foodName;
     private String foodPrice;
     private String itemImage;
+    private String addersAndSizes;
 
-    public CartDetails(String foodId, String foodName, String foodPrice, String itemImage) {
+    public CartDetails(String foodId, String foodName, String foodPrice, String itemImage, String addersAndSizes) {
         this.foodId = foodId;
         this.foodName = foodName;
         this.foodPrice = foodPrice;
         this.itemImage = itemImage;
+        this.addersAndSizes = addersAndSizes;
     }
-
 
     public String getFoodId() {
         return foodId;
@@ -45,5 +46,13 @@ public class CartDetails {
 
     public void setItemImage(String itemImage) {
         this.itemImage = itemImage;
+    }
+
+    public String getAddersAndSizes() {
+        return addersAndSizes;
+    }
+
+    public void setAddersAndSizes(String addersAndSizes) {
+        this.addersAndSizes = addersAndSizes;
     }
 }
