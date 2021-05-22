@@ -12,7 +12,7 @@
     <color name="cart">#918D8C</color>
     <color name="loginBackground">#E8E8E8</color>
 
-    <color name="profileBackground">#00BCD4</color>
+    <color name="profileBackground">#FFFFFF</color>
     <color name="addMoreButton">#2196F3</color>
     <color name="colorTransparent">#002198c6</color>
     <color name="buttonEditText">#9F9F9F</color>
@@ -25,5 +25,8 @@
     <color name="whiteTextColor">#fff</color>
     <color name="whiteCardColor">#fff</color>
     <color name="profileAccentColor">#F7F7F7</color>
+
+
+    <color name="profilePrimaryDark">#FF3B30</color>
 
 </resources>

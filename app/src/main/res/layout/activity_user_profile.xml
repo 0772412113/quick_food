@@ -1,123 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cart"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".UserProfile">
+    android:fitsSystemWindows="true"
+    tools:context=".UserProfile"
+    android:background="@color/profileBackground">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="90dp"
-        android:layout_marginRight="20dp"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <TextView
-            style="@style/headerText"
-            android:layout_marginBottom="20dp"
-            android:textColor="@android:color/black"
-            android:text="Account Info" />
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/profilePrimaryDark"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@+id/toolbar"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleTextAppearance="@style/TransparentText">
 
-        <RelativeLayout style="@style/profileDetailsLayout">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:id="@+id/linearLayout"
+                android:background="@drawable/profile_top_background">
 
-            <TextView
-                android:id="@+id/nameTextView"
-                style="@style/profileDetailsTextMain"
-                android:text="Name   :" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/profile_icon" />
 
-            <TextView
-                android:id="@+id/prfile_name"
-                style="@style/profileDetailsMiniText"
-                android:layout_toRightOf="@id/nameTextView"
-                android:text="developer" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Details"
+                    android:textSize="28dp"
+                    android:textStyle="bold"/>
 
-        </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/profileBackground">
 
-        <View style="@style/proifleDetailsView" />
+                    <View
+                        android:layout_alignParentTop="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/profile_top_background"/>
 
-        <RelativeLayout style="@style/profileDetailsLayout">
+                    <TextView
+                        android:text="Back to\nHome"
+                        style="@style/profileStyledBackButton" />
+                </RelativeLayout>
 
-            <TextView
-                android:id="@+id/nameUserID"
-                style="@style/profileDetailsTextMain"
-                android:text="User ID :" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/prfile_user_id"
-                style="@style/profileDetailsMiniText"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/nameUserID"
-                android:text="4563459" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </RelativeLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <View style="@style/proifleDetailsView" />
+    <include layout="@layout/content_profile" />
 
-        <RelativeLayout style="@style/profileDetailsLayout">
 
-            <TextView
-                android:id="@+id/nameUserMobile"
-                style="@style/profileDetailsTextMain"
-                android:text="Mobile  :" />
-
-            <TextView
-                android:id="@+id/prfile_user_number"
-                style="@style/profileDetailsMiniText"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/nameUserMobile"
-                android:text="077823" />
-
-        </RelativeLayout>
-
-        <View style="@style/proifleDetailsView" />
-
-        <RelativeLayout style="@style/profileDetailsLayout">
-
-            <TextView
-                android:id="@+id/nameEmail"
-                style="@style/profileDetailsTextMain"
-                android:text="Email    :" />
-
-            <TextView
-                android:id="@+id/prfile_email"
-                style="@style/profileDetailsMiniText"
-                android:layout_toRightOf="@id/nameEmail"
-                android:text="user@mail.com" />
-
-        </RelativeLayout>
-
-        <View style="@style/proifleDetailsView" />
-
-        <RelativeLayout style="@style/profileDetailsLayout"
-            android:layout_marginTop="40dp">
-
-            <TextView
-                android:id="@+id/buttonOrderQue"
-                style="@style/profileVenderButton"
-                android:layout_alignParentLeft="true"
-                android:text="Order Queue"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/buttonItemList"
-                style="@style/profileVenderButton"
-                android:layout_alignParentRight="true"
-                android:text="    Edit Foods    "
-                android:visibility="gone" />
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/btn_logout"
-            style="@style/profileStyledLogOutButton"
-            android:layout_marginLeft="65dp"
-            android:layout_marginTop="13dp"
-            android:text="Logout" />
-
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
