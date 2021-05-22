@@ -61,7 +61,6 @@ public class OrderConfirmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_comfirm);
-        getSupportActionBar().setTitle("User Request");
 
         confirmId = findViewById(R.id.confirm_id);
         approvalBtn = findViewById(R.id.approvalButon);

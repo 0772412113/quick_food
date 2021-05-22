@@ -35,7 +35,8 @@
             android:name=".Login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".recycler.MainFoodCategoryActivity" />
-        <activity android:name=".OrderConfirmActivity" />
+        <activity android:name=".OrderConfirmActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".anime.welcome"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
