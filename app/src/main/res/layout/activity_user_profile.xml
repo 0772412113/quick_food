@@ -106,7 +106,7 @@
                 android:id="@+id/buttonItemList"
                 style="@style/profileVenderButton"
                 android:layout_alignParentRight="true"
-                android:text="    Item List    "
+                android:text="    Edit Foods    "
                 android:visibility="gone" />
 
         </RelativeLayout>
