@@ -2,50 +2,35 @@ package com.example.quick_food.GetterSetters;
 
 public class OrderDetails {
 
-    private String Hid, Name, Type, user, Email;
+    private String orderId, status, userId;
 
-
-    public OrderDetails(String Hid, String Name, String Type, String user, String email) {
-        this.Name = Name;
-        this.Hid = Hid;
-        this.Type = Type;
-        this.user = user;
-        this.Email = email;
+    public OrderDetails(String orderId, String status, String userId) {
+        this.orderId = orderId;
+        this.status = status;
+        this.userId = userId;
     }
 
-    public String getHid() {
-        return Hid;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public String getName() {
-        return Name;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public String getType() {
-        return Type;
+    public String getStatus() {
+        return status;
     }
 
-    public String getUser() {
-        return user;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setHid(String hid) {
-        Hid = hid;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getEmail() { return Email; }
-
-    public void setEmail(String email) { Email = email; }
-
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public void setType(String type) {
-        Type = type;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

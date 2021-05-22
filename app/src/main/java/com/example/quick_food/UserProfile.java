@@ -9,26 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.quick_food.GetterSetters.OrderDetails;
 import com.example.quick_food.recycler.OrderQueue;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.kaopiz.kprogresshud.KProgressHUD;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.quick_food.Login.MY_PREFS_NAME;
 
@@ -36,11 +24,6 @@ public class UserProfile extends AppCompatActivity {
 
     TextView userName, userId, userNumber, userEmail, orderQueueButton, itemListButton, logOutButton;
     private boolean userIsVender = false;
-
-    public static List<OrderDetails> myOrderDetails;
-    public static OrderDetails mOrderData;
-    FirebaseFirestore db;
-    KProgressHUD progressHUD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +67,7 @@ public class UserProfile extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(UserProfile.this, OrderQueue.class);
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent,101);
 
             }
         });
@@ -96,7 +78,7 @@ public class UserProfile extends AppCompatActivity {
 
                 Intent intent = new Intent(UserProfile.this, ItemList.class);
                 startActivity(intent);
-                finish();
+
 
             }
         });
@@ -196,45 +178,6 @@ public class UserProfile extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    private void setDatalist() {
-        progressHUD.show();
-        db = FirebaseFirestore.getInstance();
-        myOrderDetails = new ArrayList<>();
-
-        db.collection("HelmetData")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                Log.d("Doc", document.getId() + " => " + document.getData());
-
-                                final String helmetName = document.getString("Title");
-                                final String helmetHid = document.getString("Hid");
-                                final String helmetType = document.getString("Type");
-                                final String helmetUser = document.getString("user");
-                                final String helmetUserEmail = document.getString("email");
-
-                                mOrderData = new OrderDetails(helmetHid, helmetName, helmetType, helmetUser, helmetUserEmail);
-                                myOrderDetails.add(mOrderData);
-
-                                progressHUD.dismiss();
-
-                            }
-
-
-                        } else {
-                            progressHUD.dismiss();
-                            Log.d("Doc", "Error getting documents: ", task.getException());
-                            Toast.makeText(UserProfile.this, "Error getting Data", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
     }
 
 }

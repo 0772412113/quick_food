@@ -33,8 +33,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.quick_food.recycler.MyCartActivity.FCM_API;
-import static com.example.quick_food.recycler.MyCartActivity.serverKey;
+import static com.example.quick_food.Utils.FCM_API;
+import static com.example.quick_food.Utils.serverKey;
 
 public class OrderConfirmActivity extends AppCompatActivity {
 
@@ -276,7 +276,7 @@ public class OrderConfirmActivity extends AppCompatActivity {
                         progressHUD.dismiss();
                         Toast.makeText(OrderConfirmActivity.this, "Successfully sent", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "onResponse: " + response.toString());
-                        Intent intent = new Intent(OrderConfirmActivity.this, MainFoodCategoryActivity.class);
+                        Intent intent = new Intent(OrderConfirmActivity.this, UserProfile.class);
                         startActivity(intent);
                         finish();
 

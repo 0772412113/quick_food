@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +25,14 @@ import com.example.quick_food.Adapters.CartViewAdapter;
 import com.example.quick_food.Firebase.MySingleton;
 import com.example.quick_food.GetterSetters.CartDetails;
 import com.example.quick_food.R;
+import com.example.quick_food.ShareBarcode;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
@@ -36,29 +42,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Random;
 
 import static com.example.quick_food.Login.MY_PREFS_NAME;
+import static com.example.quick_food.Utils.FCM_API;
+import static com.example.quick_food.Utils.serverKey;
 
 public class MyCartActivity extends AppCompatActivity {
 
     RecyclerView mRecycleView;
-    public static List<CartDetails> myCartList;
     CartDetails mcartData;
-    static double totalValueForAllCart;
-    static TextView mTxtTotalForCart;
     FirebaseFirestore db;
     SharedPreferences prefs;
-
-    public static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    public static final String serverKey = "key=" + "AAAAmwlrfl4:APA91bE0OQBsXfcPHZRUqJfseLoJIdmSESfKoRybHwY2CfJ8-mQzdIgbE81OQ4y-HUSrHkG0jAvD9JR9GLxUgse37719UvTTXRwHjq6hY6rwefBMTyMHZnbL6Knt6RDRyx8NmeVnPkEJ";
+    Button placeOrderBtn;
     String contentType = "application/json";
     String TAG = "NOTIFICATION TAG";
-
     String NOTIFICATION_TITLE;
     String NOTIFICATION_MESSAGE;
     String TOPIC;
     KProgressHUD progressHUD;
+    String orderStatus;
+    String isVendorLogged;
+    String curentOrderId;
+    String currentUserId;
+
+    public static List<CartDetails> myCartList;
+    static double totalValueForAllCart;
+    static TextView mTxtTotalForCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,7 @@ public class MyCartActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        placeOrderBtn = findViewById(R.id.btn_placeorder);
 
         progressHUD = KProgressHUD.create(MyCartActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -82,88 +93,257 @@ public class MyCartActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        isVendorLogged = prefs.getString("userIsVender", "");
+
 
         mTxtTotalForCart = findViewById(R.id.tv_total);
         mRecycleView = (RecyclerView) findViewById(R.id.recycler_cart);
-        if (myCartList == null || myCartList.isEmpty()) {
-            myCartList = new ArrayList<>();
-        }
+
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MyCartActivity.this, 1);
         mRecycleView.setLayoutManager(gridLayoutManager);
 
+        if (getIntent().getStringExtra("EXTRA_ORDER_ID") != null) {
+            curentOrderId = getIntent().getStringExtra("EXTRA_ORDER_ID");
+            currentUserId =  getIntent().getStringExtra("EXTRA_ORDER_USER_ID");
+            setDatalist();
 
-        final String foodImage = getIntent().getStringExtra("image_Name");
-        final String foodName = getIntent().getStringExtra("item_name");
-        final String foodPrice = getIntent().getStringExtra("total_price");
-        final String foodId = getIntent().getStringExtra("item_id");
+        } else {
+            if (myCartList == null || myCartList.isEmpty()) {
+                myCartList = new ArrayList<>();
+            }
 
-        if (foodId != null) {
-            mcartData = new CartDetails(foodId, foodName, foodPrice, foodImage);
-            myCartList.add(mcartData);
+            final String foodImage = getIntent().getStringExtra("image_Name");
+            final String foodName = getIntent().getStringExtra("item_name");
+            final String foodPrice = getIntent().getStringExtra("total_price");
+            final String foodId = getIntent().getStringExtra("item_id");
+
+            if (foodId != null) {
+                mcartData = new CartDetails(foodId, foodName, foodPrice, foodImage);
+                myCartList.add(mcartData);
+            }
+
+            method();
+
+            CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList);
+            mRecycleView.setAdapter(myAdapter);
         }
 
-        method();
+        placeOrderBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
-        CartViewAdapter myAdapter = new CartViewAdapter(MyCartActivity.this, myCartList);
-        mRecycleView.setAdapter(myAdapter);
+                if (curentOrderId != null) {
+
+                    if (isVendorLogged.equals("")) {
+                        Intent intent = new Intent(MyCartActivity.this, ShareBarcode.class);
+                        intent.putExtra("DECRYPTDATA", curentOrderId);
+                        startActivity(intent);
+                    } else {
+
+                        if (orderStatus.equals("A")) {
+
+                            progressHUD.show();
+
+                            Map<String, Object> get_data = new HashMap<>();
+                            get_data.put("Status", "C");
+
+
+                            Log.e("DocPath >>", curentOrderId);
+
+                            db.collection("OrderDetails").document(curentOrderId).update(get_data)
+
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            Toast.makeText(MyCartActivity.this, "Data successfully written! update", Toast.LENGTH_LONG).show();
+
+                                            TOPIC = "/topics/" + currentUserId.toString();
+                                            NOTIFICATION_TITLE = "Complete Order";
+                                            NOTIFICATION_MESSAGE = "Your Order has been completed. Click here to see details";
+
+                                            JSONObject notification = new JSONObject();
+                                            JSONObject notifcationBody = new JSONObject();
+                                            try {
+                                                notifcationBody.put("title", NOTIFICATION_TITLE);
+                                                notifcationBody.put("message", NOTIFICATION_MESSAGE);
+                                                notifcationBody.put("orderId", curentOrderId);
+
+                                                notification.put("to", TOPIC);
+                                                notification.put("data", notifcationBody);
+                                            } catch (JSONException e) {
+                                                Log.e(TAG, "onCreate: " + e.getMessage());
+                                            }
+                                            sendNotification(notification);
+
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            progressHUD.dismiss();
+                                            Toast.makeText(MyCartActivity.this, "Data writing Error update", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    });
+
+                        } else if (orderStatus.equals("P")) {
+                            progressHUD.show();
+
+                            Map<String, Object> get_data = new HashMap<>();
+                            get_data.put("Status", "A");
+
+
+                            Log.e("DocPath >>", curentOrderId);
+
+                            db.collection("OrderDetails").document(curentOrderId).update(get_data)
+
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            Toast.makeText(MyCartActivity.this, "Data successfully written! update", Toast.LENGTH_LONG).show();
+
+                                            TOPIC = "/topics/" + currentUserId.toString();
+                                            NOTIFICATION_TITLE = "Complete Order";
+                                            NOTIFICATION_MESSAGE = "Your Order has been completed. Click here to see details";
+
+                                            JSONObject notification = new JSONObject();
+                                            JSONObject notifcationBody = new JSONObject();
+                                            try {
+                                                notifcationBody.put("title", NOTIFICATION_TITLE);
+                                                notifcationBody.put("message", NOTIFICATION_MESSAGE);
+                                                notifcationBody.put("orderId", curentOrderId);
+
+                                                notification.put("to", TOPIC);
+                                                notification.put("data", notifcationBody);
+                                            } catch (JSONException e) {
+                                                Log.e(TAG, "onCreate: " + e.getMessage());
+                                            }
+                                            sendNotification(notification);
+
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            progressHUD.dismiss();
+                                            Toast.makeText(MyCartActivity.this, "Data writing Error update", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    });
+                        }
+                    }
+
+                } else {
+
+                    progressHUD.show();
+                    Random rand = new Random();
+                    int n = rand.nextInt(10000);
+                    //final String docPath = UUID.randomUUID().toString().replace("-", "");
+                    final String docPath = String.valueOf(n);
+
+                    Map<String, Object> get_data = new HashMap<>();
+                    get_data.put("Status", "P");
+                    get_data.put("userId", prefs.getString("loggedUserId", ""));
+
+                    for (int i = 0; i < myCartList.size(); i++) {
+                        get_data.put(myCartList.get(i).getFoodId(), "0");
+                    }
+
+                    Log.e("DocPath >>", docPath);
+
+                    db.collection("OrderDetails").document(docPath).set(get_data)
+
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    Toast.makeText(MyCartActivity.this, "Data successfully written! update", Toast.LENGTH_LONG).show();
+
+                                    TOPIC = "/topics/ToADMIN";
+                                    NOTIFICATION_TITLE = "New Order";
+                                    NOTIFICATION_MESSAGE = "New Order received. Please approve or reject it.";
+
+                                    JSONObject notification = new JSONObject();
+                                    JSONObject notifcationBody = new JSONObject();
+                                    try {
+                                        notifcationBody.put("title", NOTIFICATION_TITLE);
+                                        notifcationBody.put("message", NOTIFICATION_MESSAGE);
+                                        notifcationBody.put("orderId", docPath);
+
+                                        notification.put("to", TOPIC);
+                                        notification.put("data", notifcationBody);
+                                    } catch (JSONException e) {
+                                        Log.e(TAG, "onCreate: " + e.getMessage());
+                                    }
+                                    sendNotification(notification);
+
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    progressHUD.dismiss();
+                                    Toast.makeText(MyCartActivity.this, "Data writing Error update", Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+
+                }
+            }
+        });
     }
 
-    public void insertOrder(View view) {
 
+    private void setDatalist() {
         progressHUD.show();
+        db = FirebaseFirestore.getInstance();
 
-        final String docPath = UUID.randomUUID().toString().replace("-", "");
-
-        Map<String, Object> get_data = new HashMap<>();
-        get_data.put("Status", "P");
-        get_data.put("userId", prefs.getString("loggedUserId", ""));
-
-        for (int i = 0; i < myCartList.size(); i++) {
-            get_data.put(myCartList.get(i).getFoodId(), "0");
-        }
-
-        Log.e("DocPath >>", docPath);
-
-        db.collection("OrderDetails").document(docPath).set(get_data)
-
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("OrderDetails")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
 
-                        Toast.makeText(MyCartActivity.this, "Data successfully written! update", Toast.LENGTH_LONG).show();
+                                Log.d("Doc", document.getId() + " => " + document.getData());
 
-                        TOPIC = "/topics/ToADMIN";
-                        NOTIFICATION_TITLE = "New Order";
-                        NOTIFICATION_MESSAGE = "New Order received. Please approve or reject it.";
+                                // final String userId = document.getString("userId");
+                                if (document.getId().equals(curentOrderId)) {
+                                    orderStatus = document.getString("Status");
+                                    if (isVendorLogged.equals("")) {
+                                        if (orderStatus.equals("C")) {
+                                            placeOrderBtn.setText("Generate QR Code");
+                                        } else {
+                                            placeOrderBtn.setVisibility(View.GONE);
+                                        }
+                                    } else {
+                                        if (orderStatus.equals("A")) {
+                                            placeOrderBtn.setText("Complete Order");
+                                        } else if (orderStatus.equals("P")) {
+                                            placeOrderBtn.setText("Approve Order");
+                                        } else {
+                                            placeOrderBtn.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }
 
-                        JSONObject notification = new JSONObject();
-                        JSONObject notifcationBody = new JSONObject();
-                        try {
-                            notifcationBody.put("title", NOTIFICATION_TITLE);
-                            notifcationBody.put("message", NOTIFICATION_MESSAGE);
-                            notifcationBody.put("orderId", docPath);
+                                progressHUD.dismiss();
+                            }
 
-                            notification.put("to", TOPIC);
-                            notification.put("data", notifcationBody);
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onCreate: " + e.getMessage());
+
+                        } else {
+                            Log.d("Doc", "Error getting documents: ", task.getException());
+                            progressHUD.dismiss();
                         }
-                        sendNotification(notification);
-
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressHUD.dismiss();
-                        Toast.makeText(MyCartActivity.this, "Data writing Error update", Toast.LENGTH_LONG).show();
-
                     }
                 });
     }
-
 
     private void sendNotification(JSONObject notification) {
 
@@ -174,7 +354,7 @@ public class MyCartActivity extends AppCompatActivity {
                         progressHUD.dismiss();
                         Toast.makeText(MyCartActivity.this, "Successfully sent", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "onResponse: " + response.toString());
-                        Intent intent = new Intent(MyCartActivity.this, MainFoodCategoryActivity.class);
+                        Intent intent = new Intent(MyCartActivity.this, OrderQueue.class);
                         startActivity(intent);
                         finish();
 
